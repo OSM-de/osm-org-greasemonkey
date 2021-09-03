@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     10
+// @version     11
 // @grant       none
 // @copyright   2021, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -58,7 +58,7 @@ function modifyContent() {
       type: objectMatches[1]
     };
   }
-  mapMatches = loc.match(/#map=(\d+)\/([\d|.]*)\/([\d|.]*)/);
+  mapMatches = loc.match(/#map=(\d+)\/([\-|\d|.]*)\/([\-|\d|.]*)/);
   if (mapMatches) {
     iZoom = parseInt(mapMatches[1]) - 1;
     OsmMap = {
