@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     14
+// @version     15
 // @grant       none
 // @copyright   2021-2022, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -39,6 +39,7 @@ function modifyContent() {
   // native DOM objects
   var sidebar_content;
   var navbar_content;
+  var user_note_table;
   // other variables
   var thisUrl;
   var loc;
@@ -49,19 +50,22 @@ function modifyContent() {
   var OsmMap = { lat: "", lon: "", zoom : "" };
   var OsmApiMap = false;
   
-  // get native DOM objects
-  sidebar_content = document.getElementById("sidebar_content");
-  navbar_content = document.getElementsByClassName("primary")[0].getElementsByClassName("btn-group")[0];
-
   // parse the current URI into RegEx matches
   loc = window.location.toString();
+
+  // URI matches for main map
   objectMatches = loc.match(/(changeset|node|way|relation|note)\/(\d+)/);
   if (objectMatches) {
+    // get native DOM objects for main map
+    sidebar_content = document.getElementById("sidebar_content");
+    navbar_content = document.getElementsByClassName("primary")[0].getElementsByClassName("btn-group")[0];
+    
     OsmObject = {
       id: objectMatches[2],
       type: objectMatches[1]
     };
   }
+  
   mapMatches = loc.match(/#map=(\d+)\/([\-|\d|.]*)\/([\-|\d|.]*)/);
   if (mapMatches) {
     iZoom = parseInt(mapMatches[1]) - 1;
@@ -74,6 +78,28 @@ function modifyContent() {
   } else {
     OsmMap = getOsmApiCoords(OsmObject);
     OsmApiMap = true;
+  }
+  
+  // URI matches for user pages
+  notePageMatch = loc.match(/user\/([^\/]*)\/notes/);
+  if (notePageMatch) {
+    // get native DOM objects for user pages
+    user_note_content = document.querySelector(".content-body");
+    var button = getNoteToggleButton();
+    user_note_table = user_note_content.querySelector(".note_list");
+    user_note_tbody = user_note_table.querySelector("tbody");
+    user_note_table.style.wordWrap = 'anywhere';
+    const style = document.createElement('style');
+    style.innerHTML = "td.nobr { white-space: nowrap; }";
+    document.head.appendChild(style);
+    button.addEventListener('click', function handleClick(event) {
+      while (user_note_tbody.rows.length > 0) user_note_table.deleteRow(0);
+      getOsmApiNotes(notePageMatch[1], user_note_tbody);
+      var allParas = user_note_content.querySelectorAll("p");
+      allParas.forEach(function(p) { if (p.innerHTML.includes("| Page")) { p.innerHTML = ""; } });
+    });
+    user_note_content.querySelector(".note_list").parentNode.insertBefore(button, user_note_content.querySelector(".note_list"));   
+    //alert (user_note_content);
   }
 
   // Add links to the sidebar (node, way, relation, changeset, note)
@@ -189,6 +215,38 @@ function getAnchorElementOverpassHistory(id, url, text, className = "", target =
     if (radius !== null) { window.open(url, '_blank'); }
   });
   return anchor;
+}
+
+// createNoteToggleButton
+function getNoteToggleButton() {
+  var button;
+  button = document.createElement("input");
+  button.type = "button";
+  button.value = "Show open notes only";
+  button.style.marginBottom = "5px";
+  return button;
+}
+
+// get User notes from API
+function getOsmApiNotes(display_name, oTable) {
+  respJson = makeApiCall("https://api.openstreetmap.org/api/0.6/notes/search.json?display_name=" + display_name + "&closed=0");
+  const thisJson = JSON.parse(respJson);
+  var test = "";
+  for(let n = 0; n < thisJson.features.length; n++) {
+    var thisProp = thisJson.features[n].properties;
+    var firstCom = thisProp.comments[0];
+    var lastCom = thisProp.comments[thisProp.comments.length - 1];
+    var newRow = document.createElement("tr");
+    newRow.innerHTML = "<td><img alt=\"open\" src=\"/assets/open_note_marker-c8bded7588af7f6fcec923a12e2afbeadd630d285ca46992e54fefe15aac4496.png\" width=\"25\" height=\"40\"></td>";
+    newRow.innerHTML += "<td class=\"nobr\"><a href=\"/note/" + thisProp.id + "\">" + thisProp.id + "</a></td>";
+    if (firstCom.user === undefined) thisUser = ""; else thisUser = "<a href=\"/user/" + firstCom.user + "\">" + firstCom.user + "</a>";
+    newRow.innerHTML += "<td class=\"nobr\">" + thisUser + "</td>";
+    newRow.innerHTML += "<td>" + firstCom.html + "</td>";
+    newRow.innerHTML += "<td class=\"nobr\">" + thisProp.date_created.replace(" ","<br/>").replace("<br/>UTC", " UTC") + "</td>";
+    newRow.innerHTML += "<td class=\"nobr\">" + lastCom.date.replace(" ","<br/>").replace("<br/>UTC", " UTC") + "</td>";
+    if (firstCom.user === decodeURI(display_name)) newRow.className = "creator";
+    oTable.appendChild(newRow);
+  }
 }
 
 function getOsmApiCoords(osmObject) {
