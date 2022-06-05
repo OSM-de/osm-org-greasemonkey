@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     13
+// @version     14
 // @grant       none
 // @copyright   2021-2022, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -47,7 +47,8 @@ function modifyContent() {
   var iZoom;
   var OsmObject = { id: "", type: "" };
   var OsmMap = { lat: "", lon: "", zoom : "" };
-
+  var OsmApiMap = false;
+  
   // get native DOM objects
   sidebar_content = document.getElementById("sidebar_content");
   navbar_content = document.getElementsByClassName("primary")[0].getElementsByClassName("btn-group")[0];
@@ -69,6 +70,10 @@ function modifyContent() {
       lon: mapMatches[3],
       zoom: iZoom.toString()
     };
+    OsmApiMap = false;
+  } else {
+    OsmMap = getOsmApiCoords(OsmObject);
+    OsmApiMap = true;
   }
 
   // Add links to the sidebar (node, way, relation, changeset, note)
@@ -77,7 +82,7 @@ function modifyContent() {
     displayContainer.id = "GM-CONTA";
     displayContainer.className = "browse-tag-list";
 
-		// Notes ONLY
+    // Notes ONLY
     if (OsmObject.type === "note") {
       // Overpass History
       note_details = document.getElementById("sidebar_content").getElementsByTagName('div')[3].getElementsByClassName("details")[0];
@@ -107,7 +112,7 @@ function modifyContent() {
 
   // Add links to the primary navigation bar
   if (navbar_content) {
-    if (loc.includes("#map=")) {
+    if (loc.includes("#map=") || OsmApiMap) {
       // Mapillary
       thisUrl = "https://www.mapillary.com/app/?lat=" + OsmMap.lat + "&lng=" + OsmMap.lon + "&z=" + OsmMap.zoom;
       createOrUpdate("GM-MAPIL", navbar_content, thisUrl, "Mapillary", "btn btn-outline-primary");
@@ -172,6 +177,7 @@ function getAnchorElementOverpassHistory(id, url, text, className = "", target =
   anchor.target = target;
   anchor.innerHTML = "<center>" + text + "</center>";
   anchor.href = "#";
+  anchor.title = "Show difference since note creation on Overpass";
   if (className !== "") {
     anchor.className = className;
   }
@@ -183,4 +189,65 @@ function getAnchorElementOverpassHistory(id, url, text, className = "", target =
     if (radius !== null) { window.open(url, '_blank'); }
   });
   return anchor;
+}
+
+function getOsmApiCoords(osmObject) {
+  if (osmObject.type === "node") {
+    respJson = makeApiCall("https://api.openstreetmap.org/api/0.6/node/" + osmObject.id + ".json");
+    const thisJson = JSON.parse(respJson);
+    OsmMap = {
+      lat: thisJson.elements[0].lat,
+      lon: thisJson.elements[0].lon,
+      zoom: "18"
+    }
+    return OsmMap;
+  }
+  if (osmObject.type === "way" || osmObject.type === "relation") {
+    respJson = makeApiCall("https://api.openstreetmap.org/api/0.6/" + osmObject.type + "/" + osmObject.id + "/full.json");
+    const thisJson = JSON.parse(respJson);
+    let elementCount = 0;
+    let sumLon = 0;
+    let sumLat = 0;
+    thisJson.elements.forEach(function(o) {
+      if (o.type === "node") {
+        let sumLon = sumLon + parseFloat(o.lon);
+        let sumLat = sumLat + parseFloat(o.lat);
+        let elementCount = elementCount + 1;
+      }
+    }
+    );
+    OsmMap = {
+      lat: (sumLat / elementCount),
+      lon: (sumLon / elementCount),
+      zoom: "18"
+    }
+    return OsmMap;
+  }
+  if (osmObject.type === "note") {
+    respJson = makeApiCall("https://api.openstreetmap.org/api/0.6/notes/" + osmObject.id + ".json");
+    const thisJson = JSON.parse(respJson);
+    OsmMap = {
+      lat: thisJson.geometry.coordinates[1],
+      lon: thisJson.geometry.coordinates[0],
+      zoom: "18"
+    }
+    return OsmMap;
+  }
+  if (osmObject.type === "changeset") {
+    respJson = makeApiCall("https://api.openstreetmap.org/api/0.6/changeset/" + osmObject.id + ".json");
+    const thisJson = JSON.parse(respJson);
+    OsmMap = {
+      lat: (thisJson.elements[0].minlat + thisJson.elements[0].maxlat) / 2,
+      lon: (thisJson.elements[0].minlon + thisJson.elements[0].maxlon) / 2,
+      zoom: "18"
+    }
+    return OsmMap;
+  }
+}
+
+function makeApiCall(url) {
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("GET", url, false);
+  xmlHttp.send(null);
+  return xmlHttp.responseText;
 }
