@@ -93,10 +93,15 @@ function modifyContent() {
     style.innerHTML = "td.nobr { white-space: nowrap; }";
     document.head.appendChild(style);
     button.addEventListener('click', function handleClick(event) {
-      while (user_note_tbody.rows.length > 0) user_note_tbody.deleteRow(0);
-      getOsmApiNotes(notePageMatch[1], user_note_tbody);
-      var allParas = user_note_content.querySelectorAll("p");
-      allParas.forEach(function(p) { if (p.innerHTML.includes("| Page")) { p.innerHTML = ""; } });
+      if (button.value === "Show open notes only") {
+        while (user_note_tbody.rows.length > 0) user_note_tbody.deleteRow(0);
+        getOsmApiNotes(notePageMatch[1], user_note_tbody);
+        var allParas = user_note_content.querySelectorAll("p");
+        allParas.forEach(function(p) { if (p.innerHTML.includes("| Page")) { p.innerHTML = ""; } });
+        button.value = "Reload original page";
+      } else {
+        window.location.reload();
+      }
     });
     user_note_content.querySelector(".note_list").parentNode.insertBefore(button, user_note_content.querySelector(".note_list"));   
     //alert (user_note_content);
