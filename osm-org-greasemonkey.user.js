@@ -85,26 +85,46 @@ function modifyContent() {
   if (notePageMatch) {
     // get native DOM objects for user pages
     user_note_content = document.querySelector(".content-body");
-    var button = getNoteToggleButton();
     user_note_table = user_note_content.querySelector(".note_list");
     user_note_tbody = user_note_table.querySelector("tbody");
+    // add styles re wrapping in the table
     user_note_table.style.wordWrap = 'anywhere';
     const style = document.createElement('style');
-    style.innerHTML = "td.nobr { white-space: nowrap; }";
+    style.innerHTML = ".nobr { white-space: nowrap; }";
     document.head.appendChild(style);
+    // create button
+    var button = getNoteToggleButton();
     button.addEventListener('click', function handleClick(event) {
       if (button.value === "Show open notes only") {
+        // remove server side table rows
         while (user_note_tbody.rows.length > 0) user_note_tbody.deleteRow(0);
+        // add API table rows
         getOsmApiNotes(notePageMatch[1], user_note_tbody);
+        // remove pagination
         var allParas = user_note_content.querySelectorAll("p");
         allParas.forEach(function(p) { if (p.innerHTML.includes("| Page")) { p.innerHTML = ""; } });
         button.value = "Reload original page";
+        // replace th for sorting
+        user_note_thead = user_note_table.querySelector("thead").children[0];
+        var newTh = document.createElement("th");
+        newTh.innerHTML = "Created at<br/>&#8645;";
+        newTh.style.cursor = "pointer";
+        newTh.className = "nobr";
+        newTh.title = "Click to sort table";
+        newTh.addEventListener('click', function handleClick(event) { sortNotesTable(4); });
+        user_note_thead.replaceChild(newTh, user_note_thead.children[4]);
+        var newTh = document.createElement("th");
+        newTh.innerHTML = "Last changed<br/>&#8645;";
+        newTh.title = "Click to sort table";
+        newTh.style.cursor = "pointer";
+        newTh.className = "nobr";
+        newTh.addEventListener('click', function handleClick(event) { sortNotesTable(5); });
+        user_note_thead.replaceChild(newTh, user_note_thead.children[5]);
       } else {
         window.location.reload();
       }
     });
     user_note_content.querySelector(".note_list").parentNode.insertBefore(button, user_note_content.querySelector(".note_list"));   
-    //alert (user_note_content);
   }
 
   // Add links to the sidebar (node, way, relation, changeset, note)
@@ -313,4 +333,59 @@ function makeApiCall(url) {
   xmlHttp.open("GET", url, false);
   xmlHttp.send(null);
   return xmlHttp.responseText;
+}
+
+// non-JQuery Table sorting (Source: https://www.w3schools.com/howto/howto_js_sort_table.asp)
+function sortNotesTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  user_note_table = user_note_content.querySelector(".note_list");
+  table = user_note_table.querySelector("tbody");
+  switching = true;
+  // Set the sorting direction to ascending:
+  dir = "asc"; 
+  // Make a loop that will continue until no switching has been done:
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /* Loop through all table rows (changed from source, as we have a tbody here, not a table with headers) */
+    for (i = 0; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /*check if the two rows should switch place,
+      based on the direction, asc or desc:*/
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      //Each time a switch is done, increase this count by 1:
+      switchcount ++;      
+    } else {
+      /*If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again.*/
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
 }
