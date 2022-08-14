@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     16
+// @version     17
 // @grant       none
 // @copyright   2021-2022, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -135,6 +135,8 @@ function modifyContent() {
     displayContainer.id = "GM-CONTA";
     displayContainer.className = "browse-tag-list";
 
+    createOrUpdateResizeSidebar("GM-RESIZ", displayContainer, thisUrl, "Resize Sidebar");
+
     // Notes ONLY
     if (OsmObject.type === "note") {
       // Overpass History
@@ -223,13 +225,51 @@ function createOrUpdateOverpassHistory(id, targetObject, thisUrl, text, classNam
   }
 }
 
-function getAnchorElementOverpassHistory(id, url, text, className = "", target = "_blank") {
+// Create, Update and DOM Elements for Sidebar resize
+function createOrUpdateResizeSidebar(id, targetObject, thisUrl, text, className = "") {
+  var existingAnchor = document.getElementById(id);
+  if (existingAnchor) {
+    existingAnchor.href = thisUrl;
+  } else {
+    targetObject.appendChild(
+      getAnchorElementResizeSidebar(
+        id,
+        thisUrl,
+        text,
+        className
+      )
+    );
+  }
+}
+
+function getAnchorElementResizeSidebar(id, url, text, className = "", target = "_blank") {
   var anchor;
-  anchor = document.createElement("a");
+  anchor = document.createElement("span");
   anchor.id = id;
   anchor.target = target;
-  anchor.innerHTML = "<center>" + text + "</center>";
-  anchor.href = "#";
+  anchor.innerHTML = "<center><span style='color:#24d;cursor:pointer'>" + text + "</span></center>";
+  anchor.title = "Resize sidebar for better readability";
+  if (className !== "") {
+    anchor.className = className;
+  }
+  anchor.addEventListener('click', function handleClick(event) {
+    if (document.getElementById("sidebar").style.width == "350px") {
+      document.getElementById("sidebar").style.width = "700px"; 
+      document.getElementById("sidebar_content").style.width = "700px"; 
+    } else {
+      document.getElementById("sidebar").style.width = "350px"; 
+      document.getElementById("sidebar_content").style.width = "350px"; 
+    }
+  });
+  return anchor;
+}
+
+function getAnchorElementOverpassHistory(id, url, text, className = "", target = "_blank") {
+  var anchor;
+  anchor = document.createElement("span");
+  anchor.id = id;
+  anchor.target = target;
+  anchor.innerHTML = "<center><span style='color:#24d;cursor:pointer'>" + text + "</span></center>";
   anchor.title = "Show difference since note creation on Overpass";
   if (className !== "") {
     anchor.className = className;
