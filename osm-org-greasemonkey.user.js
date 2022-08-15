@@ -135,7 +135,23 @@ function modifyContent() {
     displayContainer.id = "GM-CONTA";
     displayContainer.className = "browse-tag-list";
 
-    createOrUpdateResizeSidebar("GM-RESIZ", displayContainer, thisUrl, "Resize Sidebar");
+    // make sidebar resizable
+    document.getElementById("sidebar").style.cssText = `
+      float: left;
+      min-width: 350px;
+      background: #fff;
+      position: relative;
+      height: 100%;
+      overflow: auto;
+      resize: horizontal;
+      max-height: fit-content;
+      max-width: fit-content;
+      padding: 1rem;
+    `;
+    document.getElementById("sidebar_content").style.cssText = `
+      width: unset !important;
+      padding: 1rem;
+    `;
 
     // Notes ONLY
     if (OsmObject.type === "note") {
@@ -223,45 +239,6 @@ function createOrUpdateOverpassHistory(id, targetObject, thisUrl, text, classNam
       )
     );
   }
-}
-
-// Create, Update and DOM Elements for Sidebar resize
-function createOrUpdateResizeSidebar(id, targetObject, thisUrl, text, className = "") {
-  var existingAnchor = document.getElementById(id);
-  if (existingAnchor) {
-    existingAnchor.href = thisUrl;
-  } else {
-    targetObject.appendChild(
-      getAnchorElementResizeSidebar(
-        id,
-        thisUrl,
-        text,
-        className
-      )
-    );
-  }
-}
-
-function getAnchorElementResizeSidebar(id, url, text, className = "", target = "_blank") {
-  var anchor;
-  anchor = document.createElement("span");
-  anchor.id = id;
-  anchor.target = target;
-  anchor.innerHTML = "<center><span style='color:#24d;cursor:pointer'>" + text + "</span></center>";
-  anchor.title = "Resize sidebar for better readability";
-  if (className !== "") {
-    anchor.className = className;
-  }
-  anchor.addEventListener('click', function handleClick(event) {
-    if (document.getElementById("sidebar").style.width == "350px") {
-      document.getElementById("sidebar").style.width = "700px"; 
-      document.getElementById("sidebar_content").style.width = "700px"; 
-    } else {
-      document.getElementById("sidebar").style.width = "350px"; 
-      document.getElementById("sidebar_content").style.width = "350px"; 
-    }
-  });
-  return anchor;
 }
 
 function getAnchorElementOverpassHistory(id, url, text, className = "", target = "_blank") {
