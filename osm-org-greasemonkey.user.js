@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     18
+// @version     19
 // @grant       none
 // @copyright   2021-2022, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -29,7 +29,27 @@ window.onload = function() {
       });
     });
   observer.observe(bodyList, config);
+  
+  // make sidebar resizable
+  document.getElementById("sidebar").style.cssText = `
+  float: left;
+  min-width: 350px;
+  background: #fff;
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  resize: horizontal;
+  max-height: fit-content;
+  max-width: fit-content;
+  padding: 1rem;
+  `;
+  document.getElementById("sidebar_content").style.cssText = `
+  width: unset !important;
+  padding: 1rem;
+  `;
+
   modifyContent();
+  
 };
 
 function modifyContent() {
@@ -133,24 +153,6 @@ function modifyContent() {
     displayContainer = document.createElement("div");
     displayContainer.id = "GM-CONTA";
     displayContainer.className = "browse-tag-list";
-
-    // make sidebar resizable
-    document.getElementById("sidebar").style.cssText = `
-      float: left;
-      min-width: 350px;
-      background: #fff;
-      position: relative;
-      height: 100%;
-      overflow: auto;
-      resize: horizontal;
-      max-height: fit-content;
-      max-width: fit-content;
-      padding: 1rem;
-    `;
-    document.getElementById("sidebar_content").style.cssText = `
-      width: unset !important;
-      padding: 1rem;
-    `;
 
     // Notes ONLY
     if (OsmObject.type === "note") {
