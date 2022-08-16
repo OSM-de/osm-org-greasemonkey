@@ -35,17 +35,13 @@ window.onload = function() {
   float: left;
   min-width: 350px;
   background: #fff;
-  position: relative;
-  height: 100%;
   overflow: auto;
   resize: horizontal;
   max-height: fit-content;
   max-width: fit-content;
-  padding: 1rem;
   `;
   document.getElementById("sidebar_content").style.cssText = `
   width: unset !important;
-  padding: 1rem;
   `;
 
   modifyContent();
