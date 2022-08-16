@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     19
+// @version     20
 // @grant       none
 // @copyright   2021-2022, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -25,6 +25,10 @@ window.onload = function() {
         if (oldHref !== document.location.href) {
           oldHref = document.location.href;
           modifyContent();
+          osmLocCookie = getCookie("_osm_location");
+          loc = window.location.toString();
+          layerMatches = loc.match(/layers=([A-Z]*)/);
+          setCookie("_osm_location", osmLocCookie.substring(0, osmLocCookie.lastIndexOf("|")+1) + layerMatches[1], 3650);
         }
       });
     });
@@ -46,7 +50,53 @@ window.onload = function() {
 
   modifyContent();
   
+  document.addEventListener("keydown", (event) => {
+    modifyLayers(event)
+  });
+
 };
+
+function modifyLayers(event) {
+  if (event.altKey) {
+	  // TODO: Togglable Overlay Layers don't work correctly right now because the events don't get fired solely by chaning the URL
+    blockAction = false;
+    toggle = false;
+    switch (event.key) {
+      case "1": { layer = "M"; break; }
+      case "2": { layer = "Y"; break; }
+      case "3": { layer = "C"; break; }
+      case "4": { layer = "T"; break; }
+      case "5": { layer = "O"; break; }
+      case "6": { layer = "H"; break; }
+      /*
+      case "7": { layer = "N"; formCheckInput = 0; toggle = true; break; }
+      case "8": { layer = "D"; formCheckInput = 1; toggle = true; break; }
+      case "9": { layer = "G"; formCheckInput = 2; toggle = true; break; }
+      */
+      default:  { blockAction = true; break;}
+    }
+    if (!blockAction) {
+      loc = window.location.toString();
+      layerMatches = loc.match(/layers=([A-Z]*)/);
+      if (layerMatches) {
+        if (toggle) {
+          if (newLayer.includes(layer)) {
+            newLayer = newLayer.replaceAll(layer, "");
+            document.getElementsByClassName("form-check-input")[formCheckInput].checked = false;
+          } else {
+            newLayer = newLayer + layer;
+            document.getElementsByClassName("form-check-input")[formCheckInput].checked = true;
+          }
+        } else {
+          newLayer = layerMatches[0].replace(/[CHTOY]/g, "") + layer;
+        }
+      } else {
+        if (layer !== "") newLayer = "layers=" + layer;
+      }
+      window.location.href = loc.replace(/(\&?)layers=([A-Z]*)/, "") + "&" + newLayer;
+    }
+  }
+}
 
 function modifyContent() {
   // new DOM objects
@@ -404,4 +454,21 @@ function sortNotesTable(n) {
       }
     }
   }
+}
+
+function getCookie(cName) {
+  const name = cName + "=";
+  const cDecoded = decodeURIComponent(document.cookie); //to be careful
+  const cArr = cDecoded .split('; ');
+  let res;
+  cArr.forEach(val => {
+    if (val.indexOf(name) === 0) res = val.substring(name.length);
+  })
+  return res;
+}
+function setCookie(cName, cValue, expDays) {
+  let date = new Date();
+  date.setTime(date.getTime() + (expDays * 24 * 60 * 60 * 1000));
+  const expires = "expires=" + date.toUTCString();
+  document.cookie = cName + "=" + cValue + "; " + expires + "; path=/";
 }
