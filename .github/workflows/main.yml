@@ -1,9 +1,7 @@
 name: Analyze code statically
 
 on: 
-  push:
-  pull_request:
-  workflow_dispatch:
+  pull_request
 
 jobs:
   jshint:
