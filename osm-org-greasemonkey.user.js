@@ -199,7 +199,7 @@ function modifyContent() {
   if (sidebar_content) {
     displayContainer = document.createElement("div");
     displayContainer.id = "GM-CONTA";
-    displayContainer.className = "browse-tag-list";
+    displayContainer.className = "browse-tag-list btn-group-sm";
 
     // Notes ONLY
     if (OsmObject.type === "note") {
@@ -208,21 +208,21 @@ function modifyContent() {
       note_location = note_details.getAttribute("data-coordinates");
       const note_time = new Date(Date.parse(note_details.querySelector("abbr").getAttribute("title"))).toISOString();
       thisUrl = "http://overpass-turbo.eu/?Q=%5Bdiff%3A%22" + note_time + "%22%5D%3B%28nw%28around%3A~~radius~~%2C" + note_location + "%29%3B%29%3Bout+body%3B%3E%3Bout+skel+qt%3B&R";
-      createOrUpdateOverpassHistory("GM-OVERP", displayContainer, thisUrl, "Overpass History");
+      createOrUpdateOverpassHistory("GM-OVERP", displayContainer, thisUrl, "Overpass History", "btn btn-outline-primary");
     }
     // Changesets ONLY
     if (OsmObject.type === "changeset") {
       thisUrl = "https://osmcha.org/changesets/" + OsmObject.id;
-      createOrUpdate("GM-OMSCH", displayContainer, thisUrl, "<span style=\"color:#666\"><strong style=\"color: #448ee4\">OSM</strong>Cha</span> for this Changeset");
+      createOrUpdate("GM-OMSCH", displayContainer, thisUrl, "<span style=\"color:#666\"><strong style=\"color: #448ee4\">OSM</strong>Cha</span> for this Changeset", "btn btn-outline-primary");
     }
     // Nodes, Ways, Relations ONLY
     if (new RegExp(["node","way","relation"].join("|")).test(OsmObject.type)) {
       // OSM Deep History
       thisUrl = "https://osmlab.github.io/osm-deep-history/#/" + OsmObject.type + "/" + OsmObject.id;
-      createOrUpdate("GM-OMSDH", displayContainer, thisUrl, "OSM Deep History");
+      createOrUpdate("GM-OMSDH", displayContainer, thisUrl, "OSM Deep History", "btn btn-outline-primary");
       thisUrl = "https://nominatim.openstreetmap.org/ui/details.html?osmtype=" + OsmObject.type.substring(0, 1).toUpperCase() + "&osmid=" + OsmObject.id;
       // Nominatim Details
-      createOrUpdate("GM-NOMIN", displayContainer, thisUrl, "Nominatim Details");
+      createOrUpdate("GM-NOMIN", displayContainer, thisUrl, "Nominatim Details", "btn btn-outline-primary");
     }
     if (!document.getElementById("GM-CONTA")) {
       sidebar_content.getElementsByTagName('div')[3].parentNode.insertBefore(displayContainer, sidebar_content.getElementsByTagName('div')[3]);
