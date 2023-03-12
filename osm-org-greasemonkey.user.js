@@ -213,7 +213,7 @@ function modifyContent() {
     // Changesets ONLY
     if (OsmObject.type === "changeset") {
       thisUrl = "https://osmcha.org/changesets/" + OsmObject.id;
-      createOrUpdate("GM-OMSCH", displayContainer, thisUrl, "OSMCha for this Changeset");
+      createOrUpdate("GM-OMSCH", displayContainer, thisUrl, "<span style=\"color:#666\"><strong style=\"color: #448ee4\">OSM</strong>Cha</span> for this Changeset");
     }
     // Nodes, Ways, Relations ONLY
     if (new RegExp(["node","way","relation"].join("|")).test(OsmObject.type)) {
