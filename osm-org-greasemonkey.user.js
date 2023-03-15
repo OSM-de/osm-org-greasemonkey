@@ -240,6 +240,7 @@ function modifyContent() {
       createOrUpdate("GM-KARTA", navbar_content, thisUrl, "KartaView", "btn btn-outline-primary");
       thisUrl = "https://community.openstreetmap.org/";
       createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary");
+      // Wiki
       thisUrl = "https://wiki.openstreetmap.org/wiki/Main_Page";
       createOrUpdate("GM-WIKIP", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Wiki</strong>", "btn btn-outline-primary");
     }
