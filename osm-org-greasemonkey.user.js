@@ -209,7 +209,7 @@ function modifyContent() {
       note_location = note_details.getAttribute("data-coordinates");
       const note_time = new Date(Date.parse(note_details.querySelector("abbr").getAttribute("title"))).toISOString();
       thisUrl = "http://overpass-turbo.eu/?Q=%5Bdiff%3A%22" + note_time + "%22%5D%3B%28nw%28around%3A~~radius~~%2C" + note_location + "%29%3B%29%3Bout+body%3B%3E%3Bout+skel+qt%3B&R";
-      createOrUpdateOverpassHistory("GM-OVERP", displayContainer, thisUrl, "Overpass History", "btn btn-outline-primary");
+      createOrUpdateOverpassHistory("GM-OVERP", displayContainer, thisUrl, "<span style=\"color:rgba(0,0,0,.7);font-weight:700;font-family: Helvetica Neue,Helvetica,Arial,sans-serif;\">Overpass</span> History", "btn btn-outline-primary");
     }
     // Changesets ONLY
     if (OsmObject.type === "changeset") {
