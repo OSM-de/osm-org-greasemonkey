@@ -238,6 +238,12 @@ function modifyContent() {
       // KartaView
       thisUrl = "https://kartaview.org/map/@" + OsmMap.lat + "," + OsmMap.lon + "," + OsmMap.zoom + "z";
       createOrUpdate("GM-KARTA", navbar_content, thisUrl, "<strong style=\"color:#0C1D2E\">Karta</strong><span style=\"color:#635BFF\">View</span>", "btn btn-outline-primary");
+      // Discourse Community
+      thisUrl = "https://community.openstreetmap.org/";
+      createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary");
+      // Wiki
+      thisUrl = "https://wiki.openstreetmap.org/wiki/Main_Page";
+      createOrUpdate("GM-WIKIP", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Wiki</strong>", "btn btn-outline-primary");
     }
   }
 }
