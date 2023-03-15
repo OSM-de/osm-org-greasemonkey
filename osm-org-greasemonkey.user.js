@@ -200,11 +200,12 @@ function modifyContent() {
     displayContainer = document.createElement("div");
     displayContainer.id = "GM-CONTA";
     displayContainer.className = "browse-tag-list btn-group-sm";
+		displayContainer.style.textAlign = "center";
 
     // Notes ONLY
     if (OsmObject.type === "note") {
       // Overpass History
-      note_details = document.getElementById("sidebar_content").getElementsByTagName('div')[3].getElementsByClassName("details")[0];
+      note_details = document.getElementById("sidebar_content").getElementsByClassName("details")[0];
       note_location = note_details.getAttribute("data-coordinates");
       const note_time = new Date(Date.parse(note_details.querySelector("abbr").getAttribute("title"))).toISOString();
       thisUrl = "http://overpass-turbo.eu/?Q=%5Bdiff%3A%22" + note_time + "%22%5D%3B%28nw%28around%3A~~radius~~%2C" + note_location + "%29%3B%29%3Bout+body%3B%3E%3Bout+skel+qt%3B&R";
@@ -225,7 +226,7 @@ function modifyContent() {
       createOrUpdate("GM-NOMIN", displayContainer, thisUrl, "Nominatim Details", "btn btn-outline-primary");
     }
     if (!document.getElementById("GM-CONTA")) {
-      sidebar_content.getElementsByTagName('div')[3].parentNode.insertBefore(displayContainer, sidebar_content.getElementsByTagName('div')[3]);
+      sidebar_content.getElementsByTagName('div')[2].parentNode.insertBefore(displayContainer, sidebar_content.getElementsByTagName('div')[2]);
     }
   }
 
