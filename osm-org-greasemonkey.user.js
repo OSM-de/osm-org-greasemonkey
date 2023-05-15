@@ -36,7 +36,8 @@ window.onload = function() {
   observer.observe(bodyList, config);
   
   // make sidebar resizable
-  document.getElementById("sidebar").style.cssText = `
+  if (document.getElementById("sidebar") != null) {
+    document.getElementById("sidebar").style.cssText = `
   float: left;
   min-width: 350px;
   background: #fff;
@@ -45,9 +46,13 @@ window.onload = function() {
   max-height: fit-content;
   max-width: fit-content;
   `;
-  document.getElementById("sidebar_content").style.cssText = `
+  }
+  if (document.getElementById("sidebar_content") != null) {
+    document.getElementById("sidebar_content").style.cssText = `
   width: unset !important;
   `;
+  }
+  
 
   modifyContent();
   
