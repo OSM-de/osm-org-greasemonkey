@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     22
+// @version     23
 // @grant       none
 // @copyright   2021-2023, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -53,11 +53,10 @@ window.onload = function() {
   `;
   }
   
-
   modifyContent();
   
   document.addEventListener("keydown", (event) => {
-    modifyLayers(event)
+    modifyLayers(event);
   });
 
 };
@@ -218,6 +217,7 @@ function modifyContent() {
     }
     // Changesets ONLY
     if (OsmObject.type === "changeset") {
+      // OSMCha
       thisUrl = "https://osmcha.org/changesets/" + OsmObject.id;
       createOrUpdate("GM-OMSCH", displayContainer, thisUrl, "<span style=\"color:#666\"><strong style=\"color: #448ee4\">OSM</strong>Cha</span> for this Changeset", "btn btn-outline-primary");
     }
@@ -229,6 +229,19 @@ function modifyContent() {
       thisUrl = "https://nominatim.openstreetmap.org/ui/details.html?osmtype=" + OsmObject.type.substring(0, 1).toUpperCase() + "&osmid=" + OsmObject.id;
       // Nominatim Details
       createOrUpdate("GM-NOMIN", displayContainer, thisUrl, "Nominatim Details", "btn btn-outline-primary");
+      
+      // Create Links out to datasets that aren't provided by the openstreetmap website github
+      tagList = document.querySelector("table.browse-tag-list tbody");
+      if (tagList != null) {
+        rows = tagList.querySelectorAll("tr");
+        for (iRow = 0; iRow < rows.length; iRow++) {
+          tagK = rows[iRow].children[0].innerText;
+          tagV = rows[iRow].children[1].innerText;
+          newTagV = returnNewValueContent(tagK, tagV);
+          if (newTagV != tagV) rows[iRow].children[1].innerHTML = newTagV;
+        }
+      }
+      
     }
     if (!document.getElementById("GM-CONTA")) {
       sidebar_content.getElementsByTagName('div')[2].parentNode.insertBefore(displayContainer, sidebar_content.getElementsByTagName('div')[2]);
@@ -467,6 +480,34 @@ function sortNotesTable(n) {
       }
     }
   }
+}
+
+function returnNewValueContent(key, value) {
+  returnValue = value;
+  key = key.toLowerCase();
+  url = "";
+  title = "";
+  // Historic England (https://wiki.openstreetmap.org/wiki/Key:HE_ref and https://wiki.openstreetmap.org/wiki/Key:ref:GB:nhle)
+  if (key === "he_ref" || key == "ref:gb:nhle") {
+    url = "https://historicengland.org.uk/listing/the-list/results/?searchType=NHLE+Simple&search=" + value;
+    title = "Historic England List";
+  }
+  // OpenPlaques (https://wiki.openstreetmap.org/wiki/Key:openplaques:id)
+  if (key === "openplaques:id") {
+    url = "http://openplaques.org/plaques/" + value;
+    title = "OpenPlaques";
+  }
+  // Mapillary
+  if (key === "mapillary") {
+    url = "https://www.mapillary.com/app/?focus=photo&pKey=" + value;
+    title = "Mapillary";
+  }
+  if (url != "" && title != "") {
+    returnValue = "<a href=\"" + url + "\" target=\"_blank\" title=\"" + title + " [Added by GreaseMonkey]\">" + value + "</a>";
+    url = "";
+    title = "";
+  }
+  return returnValue;
 }
 
 function getCookie(cName) {
