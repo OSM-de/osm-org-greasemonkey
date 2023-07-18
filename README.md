@@ -15,7 +15,7 @@ Once you have the Greasemonkey AddOn in your browser, simply use [this](https://
 
 ## Primary Navigation Header
 
-* Links to Mapillary and Kartaview at the map location and zoom level.
+* Links to Mapillary, Kartaview and BingMaps Aerial Layer at the map location and zoom level.
 * Links to OSM Community and OSM Wiki
 
 ![grafik](https://github.com/OSM-de/osm-org-greasemonkey/assets/24451207/57c3bf80-8e5c-41a4-8731-dd01b0517b71)
@@ -41,12 +41,13 @@ Once you have the Greasemonkey AddOn in your browser, simply use [this](https://
 ![grafik](https://github.com/OSM-de/osm-org-greasemonkey/assets/24451207/60ab1cb1-1098-4b6d-b737-79db781818ef)
 
 * Linkifies values that point to external websites that aren't provided by osm-website for these tags:
-  * HE_ref and ref:GB:nhle
-  * openplaques:id
-  * mapillary
+  * `HE_ref` and `ref:GB:nhle` (Historic England)
+  * `ref:hmdb` (Historical Markers Database)
+  * `ref:GB:hs` (Historic Environment Scotland)
+  * `openplaques:id` (OpenPlaques)
+  * `mapillary` (Mapillary)
 
 ![grafik](https://github.com/OSM-de/osm-org-greasemonkey/assets/24451207/3d01725d-cfaa-43f7-a2d3-7327b2fbee30)
-
 
 ## "My Notes" page on your profile
 

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     23
+// @version     24
 // @grant       none
 // @copyright   2021-2023, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -257,18 +257,21 @@ function modifyContent() {
       // KartaView
       thisUrl = "https://kartaview.org/map/@" + OsmMap.lat + "," + OsmMap.lon + "," + OsmMap.zoom + "z";
       createOrUpdate("GM-KARTA", navbar_content, thisUrl, "<strong style=\"color:#0C1D2E\">Karta</strong><span style=\"color:#635BFF\">View</span>", "btn btn-outline-primary");
+      // Bing Aerial
+      thisUrl = "https://www.bing.com/maps?cp=" + OsmMap.lat + "%7E" + OsmMap.lon + "&lvl=" + (parseInt(OsmMap.zoom)+1).toString() + "&style=a";
+      createOrUpdate("GM-BING", navbar_content, thisUrl, "BingMaps", "btn btn-outline-primary", "BingMaps Aerial Layer");
       // Discourse Community
       thisUrl = "https://community.openstreetmap.org/";
-      createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary");
+      createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary", "OpenStreetMap Community Discourse");
       // Wiki
       thisUrl = "https://wiki.openstreetmap.org/wiki/Main_Page";
-      createOrUpdate("GM-WIKIP", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Wiki</strong>", "btn btn-outline-primary");
+      createOrUpdate("GM-WIKIP", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Wiki</strong>", "btn btn-outline-primary", "OpenStreetMap Wiki Main Page");
     }
   }
 }
 
 // Create, Update and DOM Elements general
-function createOrUpdate(id, targetObject, thisUrl, text, className = "") {
+function createOrUpdate(id, targetObject, thisUrl, text, className = "", title = "") {
   var existingAnchor = document.getElementById(id);
   if (existingAnchor) {
     existingAnchor.href = thisUrl;
@@ -278,18 +281,20 @@ function createOrUpdate(id, targetObject, thisUrl, text, className = "") {
         id,
         thisUrl,
         text,
-        className
+        className,
+        title
       )
     );
   }
 }
 
-function getAnchorElement(id, url, text, className = "", target = "_blank") {
+function getAnchorElement(id, url, text, className = "", title = "", target = "_blank") {
   var anchor;
   anchor = document.createElement("a");
   anchor.id = id;
   anchor.target = target;
   anchor.href = url;
+  anchor.title = title;
   anchor.innerHTML = "<center>" + text + "</center>";
   if (className !== "") {
     anchor.className = className;
@@ -501,6 +506,16 @@ function returnNewValueContent(key, value) {
   if (key === "mapillary") {
     url = "https://www.mapillary.com/app/?focus=photo&pKey=" + value;
     title = "Mapillary";
+  }
+  // Historical Markers Database
+  if (key === "ref:hmdb") {
+    url = "https://www.hmdb.org/m.asp?m=" + value;
+    title = "Historical Markers Database";
+  }
+  // Historic Environment Scotland
+  if (key == "ref:gb:hs") {
+    url = "https://portal.historicenvironment.scot/designation/" + value;
+    title = "Historic Environment Scotland"
   }
   if (url != "" && title != "") {
     returnValue = "<a href=\"" + url + "\" target=\"_blank\" title=\"" + title + " [Added by GreaseMonkey]\">" + value + "</a>";
