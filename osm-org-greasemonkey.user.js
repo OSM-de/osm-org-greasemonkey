@@ -259,7 +259,7 @@ function modifyContent() {
       createOrUpdate("GM-KARTA", navbar_content, thisUrl, "<strong style=\"color:#0C1D2E\">Karta</strong><span style=\"color:#635BFF\">View</span>", "btn btn-outline-primary");
       // Bing Aerial
       thisUrl = "https://www.bing.com/maps?cp=" + OsmMap.lat + "%7E" + OsmMap.lon + "&lvl=" + (parseInt(OsmMap.zoom)+1).toString() + "&style=a";
-      createOrUpdate("GM-BING", navbar_content, thisUrl, "BingMaps", "btn btn-outline-primary", "BingMaps Aerial Layer");
+      createOrUpdate("GM-BING", navbar_content, thisUrl, "<span style=\"color:#737373\">Bing Maps</span>", "btn btn-outline-primary", "BingMaps Aerial Layer");
       // Discourse Community
       thisUrl = "https://community.openstreetmap.org/";
       createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary", "OpenStreetMap Community Discourse");
