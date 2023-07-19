@@ -492,36 +492,27 @@ function returnNewValueContent(key, value) {
   key = key.toLowerCase();
   url = "";
   title = "";
-  // Historic England (https://wiki.openstreetmap.org/wiki/Key:HE_ref and https://wiki.openstreetmap.org/wiki/Key:ref:GB:nhle)
-  if (key === "he_ref" || key == "ref:gb:nhle") {
-    url = "https://historicengland.org.uk/listing/the-list/results/?searchType=NHLE+Simple&search=" + value;
-    title = "Historic England List";
-  }
-  // OpenPlaques (https://wiki.openstreetmap.org/wiki/Key:openplaques:id)
-  if (key === "openplaques:id") {
-    url = "http://openplaques.org/plaques/" + value;
-    title = "OpenPlaques";
-  }
-  // Mapillary
-  if (key === "mapillary") {
-    url = "https://www.mapillary.com/app/?focus=photo&pKey=" + value;
-    title = "Mapillary";
-  }
-  // Historical Markers Database
-  if (key === "ref:hmdb") {
-    url = "https://www.hmdb.org/m.asp?m=" + value;
-    title = "Historical Markers Database";
-  }
-  // Historic Environment Scotland
-  if (key == "ref:gb:hs") {
-    url = "https://portal.historicenvironment.scot/designation/" + value;
-    title = "Historic Environment Scotland"
-  }
-  if (url != "" && title != "") {
-    returnValue = "<a href=\"" + url + "\" target=\"_blank\" title=\"" + title + " [Added by GreaseMonkey]\">" + value + "</a>";
-    url = "";
-    title = "";
-  }
+  replArray = [
+    // GB-EN: Historic England
+    { keys: [ "he_ref", "ref:gb:nhle" ], url: "https://historicengland.org.uk/listing/the-list/results/?searchType=NHLE+Simple&search=~~value~~", title: "Historic England List" },
+		// GB-SC: Historic Environment Scotland
+    { keys: [ "ref:gb:hs" ], url: "https://portal.historicenvironment.scot/designation/~~value~~", title: "Historic Environment Scotland" },
+    // IE: National Index of Architectural Heritage
+    { keys: [ "ref:ie:niah" ], url: "https://www.buildingsofireland.ie/buildings-search/building/~~value~~/-", title:"National Index of Architectural Heritage" },
+    // World: Historical Markers Database
+    { keys: [ "ref:hmdb" ], url: "https://www.hmdb.org/m.asp?m=~~value~~", title: "Historical Markers Database" },
+    // World: Mapillary
+    { keys: [ "mapillary" ], url: "https://www.mapillary.com/app/?focus=photo&pKey=~~value~~", title: "Mapillary" },
+    // World: OpenPlaques
+    { keys: [ "openplaques:id" ], url: "http://openplaques.org/plaques/~~value~~", title: "OpenPlaques" },
+    // World: UNESCO World Heritage Sites
+    { keys: [ "ref:whc" ], url: "https://whc.unesco.org/en/list/~~value~~", title: "UNESCO World Heritage Centre" }
+  ];
+  replArray.forEach(e => {
+    if (e.keys.includes(key)) {
+      returnValue = "<a href=\"" + e.url.replace("~~value~~", value) + "\" target=\"_blank\" title=\"" + e.title + " [Added by GreaseMonkey]\">" + value + "</a>";
+    }
+  });
   return returnValue;
 }
 
