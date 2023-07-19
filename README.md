@@ -5,9 +5,9 @@ in the primary navigation when displayed on openstreetmap.org.
 
 Idea and initial version by [joshinils](https://github.com/joshinils), updates and transfer to OSM-de-organisation by [Kai](https://github.com/kmpoppe).
 
-# Installation into Greasemonkey
+# Installation
 
-Once you have the Greasemonkey AddOn in your browser, simply use [this](https://cdn.jsdelivr.net/gh/OSM-de/osm-org-greasemonkey@master/osm-org-greasemonkey.user.js) link to download the latest version of the script - the AddOn will automatically show you an install screen.
+Once you have the Greasemonkey AddOn in your browser (https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/), simply use [this](https://cdn.jsdelivr.net/gh/OSM-de/osm-org-greasemonkey@master/osm-org-greasemonkey.user.js) link to download the latest version of the script - the AddOn will automatically show you an install screen.
 
 ![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/OSM-de/osm-org-greasemonkey?style=for-the-badge)
 
