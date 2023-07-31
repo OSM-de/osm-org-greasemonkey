@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     24
+// @version     25
 // @grant       none
 // @copyright   2021-2023, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -498,19 +498,33 @@ function returnNewValueContent(key, value) {
 		// GB-SC: Historic Environment Scotland
     { keys: [ "ref:gb:hs" ], url: "https://portal.historicenvironment.scot/designation/~~value~~", title: "Historic Environment Scotland" },
     // IE: National Index of Architectural Heritage
-    { keys: [ "ref:ie:niah" ], url: "https://www.buildingsofireland.ie/buildings-search/building/~~value~~/-", title:"National Index of Architectural Heritage" },
+    { keys: [ "ref:ie:niah" ], url: "https://www.buildingsofireland.ie/buildings-search/building/~~value~~/-", title: "National Index of Architectural Heritage" },
+    // NZ: Department of Conservation
+    { keys: [ "ref:doc" ], url: "https://www.doc.govt.nz/search-results/?query=~~value~~", title: "Department of Conservation" },
     // World: Historical Markers Database
     { keys: [ "ref:hmdb" ], url: "https://www.hmdb.org/m.asp?m=~~value~~", title: "Historical Markers Database" },
+    // World: ISIL, BE
+    { keys: [ "ref:isil"], regex: new RegExp("BE-\d*"), url: "http://isil.kbr.be/search.php?query=~~value~~&lang=en&type=ISIL", title: "ISIL (Belgium)" },
+    // World: ISIL, DE
+    { keys: [ "ref:isil"], regex: new RegExp("DE-\d*"), url: "https://sigel.staatsbibliothek-berlin.de/suche?isil=~~value~~", title: "ISIL (Germany)" },
+    // World: ISIL, IT
+    { keys: [ "ref:isil"], regex: new RegExp("IT-\d*"), url: "https://anagrafe.iccu.sbn.it/it/ricerca/ricerca-semplice/dettaglio.html?monocampo=~~value~~", title: "ISIL (Italy)" },
+    // World: ISIL, NO
+    { keys: [ "ref:isil"], regex: new RegExp("NO-\d*"), url: "https://www.nb.no/basebibliotek/search?q=~~value~~", title: "ISIL (Norway)" },
     // World: Mapillary
     { keys: [ "mapillary" ], url: "https://www.mapillary.com/app/?focus=photo&pKey=~~value~~", title: "Mapillary" },
     // World: OpenPlaques
-    { keys: [ "openplaques:id" ], url: "http://openplaques.org/plaques/~~value~~", title: "OpenPlaques" },
+    { keys: [ "openplaques:id" ], url: "https://openplaques.org/plaques/~~value~~", title: "OpenPlaques" },
+    // World: sketchfab
+    { keys: [ "sketchfab" ], url: "https://sketchfab.com/3d-models/~~value~~", title: "Sketchfab" },
     // World: UNESCO World Heritage Sites
     { keys: [ "ref:whc" ], url: "https://whc.unesco.org/en/list/~~value~~", title: "UNESCO World Heritage Centre" }
   ];
   replArray.forEach(e => {
-    if (e.keys.includes(key)) {
-      returnValue = "<a href=\"" + e.url.replace("~~value~~", value) + "\" target=\"_blank\" title=\"" + e.title + " [Added by GreaseMonkey]\">" + value + "</a>";
+    if (!value.startsWith("http") && e.keys.includes(key)) {
+      if (!e.hasOwnProperty("regex") || (e.hasOwnProperty("regex") && value.match(e.regex))) {
+        returnValue = "<a href=\"" + e.url.replace("~~value~~", value) + "\" target=\"_blank\" title=\"" + e.title + " [Added by GreaseMonkey]\">" + value + "</a>";
+      }
     }
   });
   return returnValue;
