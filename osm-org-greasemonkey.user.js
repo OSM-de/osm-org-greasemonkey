@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     25
+// @version     26
 // @grant       none
 // @copyright   2021-2023, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -497,6 +497,8 @@ function returnNewValueContent(key, value) {
     { keys: [ "he_ref", "ref:gb:nhle" ], url: "https://historicengland.org.uk/listing/the-list/results/?searchType=NHLE+Simple&search=~~value~~", title: "Historic England List" },
 		// GB-SC: Historic Environment Scotland
     { keys: [ "ref:gb:hs" ], url: "https://portal.historicenvironment.scot/designation/~~value~~", title: "Historic Environment Scotland" },
+    // GB: FHRS
+    { keys: [ "fhrs:id" ], url: "https://ratings.food.gov.uk/business/~~value~~", title: "UK Food Hygiene Rating System" },
     // IE: National Index of Architectural Heritage
     { keys: [ "ref:ie:niah" ], url: "https://www.buildingsofireland.ie/buildings-search/building/~~value~~/-", title: "National Index of Architectural Heritage" },
     // NZ: Department of Conservation
