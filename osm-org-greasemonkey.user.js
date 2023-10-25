@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     27
+// @version     26
 // @grant       none
 // @copyright   2021-2023, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -251,55 +251,15 @@ function modifyContent() {
   // Add links to the primary navigation bar
   if (navbar_content) {
     if (loc.includes("#map=") || OsmApiMap) {
-      var extMapsDiv;
-      extMapsDiv = document.createElement("div");
-      extMapsDiv.id = "extmaps_tab";
-      extMapsDiv.className = "btn-group";
-      var emAnchor;
-      emAnchor = document.createElement("span");
-      emAnchor.id = "extmapsanchor";
-      emAnchor.className = "btn btn-outline-primary geolink";
-      emAnchor.innerHTML = "<center>External Maps</center>";
-      emAnchor.title = "Open Dropdown to show external map links";
-      var emButton;
-      emButton = document.createElement("button");
-      emButton.className = "btn btn-outline-primary dropdown-toggle dropdown-toggle-split";
-      emButton.setAttribute("data-bs-toggle", "dropdown");
-      var emList;
-      emList = document.createElement("ul");
-      emList.className = "dropdown-menu";
-      
-      extMapsDiv.appendChild(emAnchor);
-      extMapsDiv.appendChild(emButton);
-      
-      var emListLi1, emListLi2, emListLi3, emListLi4;
-      emListLi1 = document.createElement("li");
       // Mapillary
       thisUrl = "https://www.mapillary.com/app/?lat=" + OsmMap.lat + "&lng=" + OsmMap.lon + "&z=" + OsmMap.zoom;
-      createOrUpdate("GM-MAPIL", emListLi1, thisUrl, "<strong style=\"color:#05cb63\">M</strong><span style=\"color:#212b36\">apillary<span>", "geolink editlink dropdown-item");
-      emList.appendChild(emListLi1);
-      
+      createOrUpdate("GM-MAPIL", navbar_content, thisUrl, "<strong style=\"color:#05cb63\">M</strong><span style=\"color:#212b36\">apillary<span>", "btn btn-outline-primary");
       // KartaView
-      emListLi2 = document.createElement("li");
       thisUrl = "https://kartaview.org/map/@" + OsmMap.lat + "," + OsmMap.lon + "," + OsmMap.zoom + "z";
-      createOrUpdate("GM-KARTA", emListLi2, thisUrl, "<strong style=\"color:#0C1D2E\">Karta</strong><span style=\"color:#635BFF\">View</span>", "geolink editlink dropdown-item");
-      emList.appendChild(emListLi2);
-      
-      // Mapilio
-      emListLi3 = document.createElement("li");
-      thisUrl = "https://mapilio.com/app?lat=" + OsmMap.lat + "&lng=" + OsmMap.lon + "&zoom=" + OsmMap.zoom;
-      createOrUpdate("GM-MAILO", emListLi3, thisUrl, "<span style=\"color:#191919\">mapili</strong><span style=\"color:#0056F1\">o</span>", "geolink editlink dropdown-item");
-      emList.appendChild(emListLi3);
-
+      createOrUpdate("GM-KARTA", navbar_content, thisUrl, "<strong style=\"color:#0C1D2E\">Karta</strong><span style=\"color:#635BFF\">View</span>", "btn btn-outline-primary");
       // Bing Aerial
-      emListLi4 = document.createElement("li");
       thisUrl = "https://www.bing.com/maps?cp=" + OsmMap.lat + "%7E" + OsmMap.lon + "&lvl=" + (parseInt(OsmMap.zoom)+1).toString() + "&style=a";
-      createOrUpdate("GM-BING", emListLi4, thisUrl, "<span style=\"color:#737373\">Bing Maps</span>", "geolink editlink dropdown-item", "BingMaps Aerial Layer");
-      emList.appendChild(emListLi4);
-      extMapsDiv.appendChild(emList);
-      
-      navbar_content.appendChild(extMapsDiv);
-
+      createOrUpdate("GM-BING", navbar_content, thisUrl, "<span style=\"color:#737373\">Bing Maps</span>", "btn btn-outline-primary", "BingMaps Aerial Layer");
       // Discourse Community
       thisUrl = "https://community.openstreetmap.org/";
       createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary", "OpenStreetMap Community Discourse");
