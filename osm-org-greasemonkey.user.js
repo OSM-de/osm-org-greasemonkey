@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     26
+// @version     29
 // @grant       none
 // @copyright   2021-2023, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
@@ -260,6 +260,9 @@ function modifyContent() {
       // Bing Aerial
       thisUrl = "https://www.bing.com/maps?cp=" + OsmMap.lat + "%7E" + OsmMap.lon + "&lvl=" + (parseInt(OsmMap.zoom)+1).toString() + "&style=a";
       createOrUpdate("GM-BING", navbar_content, thisUrl, "<span style=\"color:#737373\">Bing Maps</span>", "btn btn-outline-primary", "BingMaps Aerial Layer");
+      // Mapilio
+      thisUrl = "https://mapilio.com/app?lat=" + OsmMap.lat + "&lng=" + OsmMap.lon + "&zoom=" + OsmMap.zoom;
+      createOrUpdate("GM-MAILO", navbar_content, thisUrl, "<span style=\"color:#191919\">mapili</strong><span style=\"color:#0056F1\">o</span>", "btn btn-outline-primary");
       // Discourse Community
       thisUrl = "https://community.openstreetmap.org/";
       createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary", "OpenStreetMap Community Discourse");
