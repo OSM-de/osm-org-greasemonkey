@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     29
+// @version     30
 // @grant       none
-// @copyright   2021-2023, https://github.com/joshinils and https://github.com/kmpoppe
+// @copyright   2021-2024, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
 // @namespace   https://github.com/OSM-de/osm-org-greasemonkey
 // @updateURL   https://cdn.jsdelivr.net/gh/OSM-de/osm-org-greasemonkey@master/osm-org-greasemonkey.user.js
@@ -496,6 +496,8 @@ function returnNewValueContent(key, value) {
   url = "";
   title = "";
   replArray = [
+    // FR: Museofile (Ministère de la culture)
+    { keys: [ "ref:fr:museofile" ], url: "https://www.pop.culture.gouv.fr/notice/museo/~~value~~", title: "Ministère de la culture" },
     // GB-EN: Historic England
     { keys: [ "he_ref", "ref:gb:nhle" ], url: "https://historicengland.org.uk/listing/the-list/results/?searchType=NHLE+Simple&search=~~value~~", title: "Historic England List" },
 		// GB-SC: Historic Environment Scotland
