@@ -1,13 +1,17 @@
-# Additional links for openstreetmap.org using [Greasemonkey]([https://wikipedia.org/wiki/Greasemonkey](https://www.greasespot.net/))
+# Additional links for openstreetmap.org using Greasemonkey or Tampermonkey
 
-This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary buttons 
-in the primary navigation when displayed on openstreetmap.org.
+This script adds a lot of functionality to openstreetmap.org:
+
+* Link to OSM Deep History and Nominatim for Nodes, Ways and Relations
+* Link to OSMCha for Changesets
+* Link to Overpass for seeing the history around a Note
+* Aerial/Streetside imagery from KartaView, Mapillary, mapilio and Bing 
 
 Idea and initial version by [joshinils](https://github.com/joshinils), updates and transfer to OSM-de-organisation by [Kai](https://github.com/kmpoppe).
 
 # Installation
 
-Once you have the Greasemonkey AddOn in your browser (https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/), simply use [this](https://cdn.jsdelivr.net/gh/OSM-de/osm-org-greasemonkey@master/osm-org-greasemonkey.user.js) link to download the latest version of the script - the AddOn will automatically show you an install screen.
+Once you have the Greasemonkey (https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) or Tampermonkey (https://www.tampermonkey.net/), simply use [this](https://cdn.jsdelivr.net/gh/OSM-de/osm-org-greasemonkey@master/osm-org-greasemonkey.user.js) link to download the latest version of the script - the AddOn will automatically show you an install screen.
 
 ![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/OSM-de/osm-org-greasemonkey?style=for-the-badge)
 
@@ -15,10 +19,10 @@ Once you have the Greasemonkey AddOn in your browser (https://addons.mozilla.org
 
 ## Primary Navigation Header
 
-* Links to Mapillary, Kartaview and BingMaps Aerial Layer at the map location and zoom level.
+* Links to Mapillary, Kartaview, mapilio and BingMaps Aerial Layer at the map location and zoom level.
 * Links to OSM Community and OSM Wiki
 
-![grafik](https://github.com/OSM-de/osm-org-greasemonkey/assets/24451207/57c3bf80-8e5c-41a4-8731-dd01b0517b71)
+![grafik](https://github.com/user-attachments/assets/3465af42-de0d-46a8-b581-16cb3d2c6cee)
 
 ## Sidebar Navigation
 
@@ -41,11 +45,17 @@ Once you have the Greasemonkey AddOn in your browser (https://addons.mozilla.org
 ![grafik](https://github.com/OSM-de/osm-org-greasemonkey/assets/24451207/60ab1cb1-1098-4b6d-b737-79db781818ef)
 
 * Linkifies values that point to external websites that aren't provided by osm-website for these tags:
+  * `ref:doc` (Department of Conservation New Zealand)
   * `HE_ref` and `ref:GB:nhle` (Historic England)
   * `ref:hmdb` (Historical Markers Database)
   * `ref:GB:hs` (Historic Environment Scotland)
+  * `ref:ie:niah` (National Index of Architectural Heritage Ireland)
+  * `ref:ISIL` (ISIL for BE, DE, IT, NO)
   * `openplaques:id` (OpenPlaques)
   * `mapillary` (Mapillary)
+  * `fhrs:id` (FHRS)
+  * `sketchfab` (sketchfab.com)
+  * `ref:whc` (UNESCO World Heritage Sites)
 
 ![grafik](https://github.com/OSM-de/osm-org-greasemonkey/assets/24451207/3d01725d-cfaa-43f7-a2d3-7327b2fbee30)
 
