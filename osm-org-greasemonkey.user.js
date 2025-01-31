@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name        Additional Links for the openstreetmap.org-sidebar
 // @description This script adds links to OSM Deep History for Nodes, Ways and Relations, OSMCha for Changesets as well as KartaView and Mapillary in the primary navigation when displayed on openstreetmap.org.
-// @version     30
+// @version     31
 // @grant       none
-// @copyright   2021-2024, https://github.com/joshinils and https://github.com/kmpoppe
+// @copyright   2021-2025, https://github.com/joshinils and https://github.com/kmpoppe
 // @license     MIT
 // @namespace   https://github.com/OSM-de/osm-org-greasemonkey
 // @updateURL   https://cdn.jsdelivr.net/gh/OSM-de/osm-org-greasemonkey@master/osm-org-greasemonkey.user.js
@@ -251,24 +251,54 @@ function modifyContent() {
   // Add links to the primary navigation bar
   if (navbar_content) {
     if (loc.includes("#map=") || OsmApiMap) {
+      createOrUpdate("aerialanchor", navbar_content, "#", "Aerial/Streetside", "btn btn-outline-primary geolink aeriallink", "Aerial and Streetside imagery");
+
+      createOrUpdateAerialButton("buttonaerial", navbar_content);
+      createOrUpdateAerialList("aeriallist", navbar_content);
+      
+      var aeriallist;
+      var aeriallistitem;
+
+      aeriallist = document.getElementById("aeriallist");
+      
       // Mapillary
+      createOrUpdateAerialListEntry("aeriallistitem1", aeriallist);
+      aeriallistitem = document.getElementById("aeriallistitem1");
       thisUrl = "https://www.mapillary.com/app/?lat=" + OsmMap.lat + "&lng=" + OsmMap.lon + "&z=" + OsmMap.zoom;
-      createOrUpdate("GM-MAPIL", navbar_content, thisUrl, "<strong style=\"color:#05cb63\">M</strong><span style=\"color:#212b36\">apillary<span>", "btn btn-outline-primary");
-      // KartaView
+      createOrUpdate("GM-MAPIL", aeriallistitem, thisUrl, "<strong style=\"color:#05cb63\">M</strong><span style=\"color:#212b36\">apillary<span>", "geolink editlink dropdown-item");
+      aeriallist.appendChild(aeriallistitem);
+      
+			// KartaView
+      createOrUpdateAerialListEntry("aeriallistitem2", aeriallist);
+      aeriallistitem = document.getElementById("aeriallistitem2");
       thisUrl = "https://kartaview.org/map/@" + OsmMap.lat + "," + OsmMap.lon + "," + OsmMap.zoom + "z";
-      createOrUpdate("GM-KARTA", navbar_content, thisUrl, "<strong style=\"color:#0C1D2E\">Karta</strong><span style=\"color:#635BFF\">View</span>", "btn btn-outline-primary");
+      createOrUpdate("GM-KARTA", aeriallistitem, thisUrl, "<strong style=\"color:#0C1D2E\">Karta</strong><span style=\"color:#635BFF\">View</span>", "geolink editlink dropdown-item");
+      aeriallist.appendChild(aeriallistitem);
+
       // Bing Aerial
+      createOrUpdateAerialListEntry("aeriallistitem3", aeriallist);
+      aeriallistitem = document.getElementById("aeriallistitem3");
       thisUrl = "https://www.bing.com/maps?cp=" + OsmMap.lat + "%7E" + OsmMap.lon + "&lvl=" + (parseInt(OsmMap.zoom)+1).toString() + "&style=a";
-      createOrUpdate("GM-BING", navbar_content, thisUrl, "<span style=\"color:#737373\">Bing Maps</span>", "btn btn-outline-primary", "BingMaps Aerial Layer");
+      createOrUpdate("GM-BING", aeriallistitem, thisUrl, "<span style=\"color:#737373\">Bing Maps</span>", "geolink editlink dropdown-item", "BingMaps Aerial Layer");
+      aeriallist.appendChild(aeriallistitem);
+      
       // Mapilio
+      createOrUpdateAerialListEntry("aeriallistitem4", aeriallist);
+      aeriallistitem = document.getElementById("aeriallistitem4");
       thisUrl = "https://mapilio.com/app?lat=" + OsmMap.lat + "&lng=" + OsmMap.lon + "&zoom=" + OsmMap.zoom;
-      createOrUpdate("GM-MAILO", navbar_content, thisUrl, "<span style=\"color:#191919\">mapili</strong><span style=\"color:#0056F1\">o</span>", "btn btn-outline-primary");
+      createOrUpdate("GM-MAILO", aeriallistitem, thisUrl, "<span style=\"color:#191919\">mapili</strong><span style=\"color:#0056F1\">o</span>", "geolink editlink dropdown-item");
+      aeriallist.appendChild(aeriallistitem);
+
+      navbar_content.appendChild(aeriallist);
+      
       // Discourse Community
       thisUrl = "https://community.openstreetmap.org/";
       createOrUpdate("GM-COMMU", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Community</strong>", "btn btn-outline-primary", "OpenStreetMap Community Discourse");
+
       // Wiki
       thisUrl = "https://wiki.openstreetmap.org/wiki/Main_Page";
       createOrUpdate("GM-WIKIP", navbar_content, thisUrl, "<span style=\"color:\">OSM</span> <strong style=\"color:\">Wiki</strong>", "btn btn-outline-primary", "OpenStreetMap Wiki Main Page");
+
     }
   }
 }
@@ -288,6 +318,46 @@ function createOrUpdate(id, targetObject, thisUrl, text, className = "", title =
         title
       )
     );
+  }
+}
+
+function createOrUpdateAerialButton(id, targetObject) {
+  var existingObj = document.getElementById(id);
+  if (existingObj) {
+    //
+  } else {
+    var obj;
+    obj = document.createElement("button");
+    obj.id = id;
+    obj.className = "btn btn-outline-primary dropdown-toggle dropdown-toggle-split flex-grow-0";
+    obj.setAttribute("type", "button");
+    obj.setAttribute("data-bs-toggle", "dropdown");
+    targetObject.appendChild(obj);
+  }
+}
+
+function createOrUpdateAerialList(id, targetObject) {
+  var existingObj = document.getElementById(id);
+  if (existingObj) {
+    //
+  } else {
+    var obj;
+    obj = document.createElement("ul");
+    obj.id = id;
+    obj.className = "dropdown-menu";
+    targetObject.appendChild(obj);
+  }
+}
+
+function createOrUpdateAerialListEntry(id, targetObject) {
+  var existingObj = document.getElementById(id);
+  if (existingObj) {
+    //
+  } else {
+    var obj;
+    obj = document.createElement("li");
+    obj.id = id;
+    targetObject.appendChild(obj);
   }
 }
 
